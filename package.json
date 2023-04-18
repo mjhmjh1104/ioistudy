@@ -1,0 +1,25 @@
+{
+  "name": "ioistudy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mjhmjh1104/ioistudy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mjhmjh1104/ioistudy/issues"
+  },
+  "homepage": "https://github.com/mjhmjh1104/ioistudy#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "http": "^0.0.1-security",
+    "mysql": "^2.18.1",
+    "socket.io": "^4.6.1"
+  }
+}

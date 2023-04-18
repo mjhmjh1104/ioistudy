@@ -1,0 +1,12 @@
+<button onclick="f();">Click me</button>
+<div>count: <span id="count">0</span></div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io();
+    socket.on('set count', function (cnt) {
+        document.getElementById('count').innerHTML = cnt.toString();
+    });
+    function f() {
+        socket.emit('press count');
+    };
+</script>
