@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IOISTUDY</title>
+    <style>
+        .row {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <a href="/create">등록</a><br>
+
+    내용이 이 아래에 차례로 표시됩니다.
+    <div id="scr">
+        <div class="row">(내용의 끝)</div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var added = false;
+        var socket = io();
+        var scr = document.getElementById('scr');
+        socket.on('add', function (list) {
+            if (added) return;
+            added = true;
+            for (var id in list) {
+                var ch = document.createElement('div');
+                ch.classList.add('row');
+                ch.innerHTML = '<a href="/view/' + id + '">' + list[id] + '</a><form action="/view/' + id + '/delete" method="POST" style="display:inline;"><input type="submit" value="삭제"></input></form>';
+                scr.insertBefore(ch, scr.firstChild);
+            }
+        });
+    </script>
+</body>
+</html>

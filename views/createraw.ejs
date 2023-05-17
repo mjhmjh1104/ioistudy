@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IOISTUDY</title>
+</head>
+<body>
+    <form method="post" action="#">
+        <textarea name="content"><% if (num != -1) { %><%= JSON.stringify(content) %><% } %></textarea>
+        <input type="submit" value="등록">
+        <button type="button" onclick="history.go(-1);">취소</button>
+    </form>
+</body>
+</html>

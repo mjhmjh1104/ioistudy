@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IOISTUDY</title>
+    <style>
+        #contents, .formbox, .formbox input, .formbox textarea {
+            width: 500px;
+        }
+        #popup {
+            width: 100%;
+            height: 100%;
+            display: none;
+            background-color: rgba(0, 0, 0, .3);
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        .popupbox {
+            display: inline-block;
+            padding: 30px;
+            background-color: white;
+        }
+        textarea {
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <form method="post" action="#" onsubmit="return submitForm();">
+        <button type="button" onclick="location.href='<% if (num == -1) { %>/createraw<% } else { %>/rawedit/<%= num %><% } %>';">raw</button><br>
+        <button type="button" onclick="showPopup();">양식 추가</button>
+        <div id="contents">
+            <div class="formbox titlebox">
+                <span>제목</span><br>
+                <input type="text" name="title" placeHolder="제목..." value="<% if (num != -1) { %><%= content.title %><% } %>">
+            </div>
+            <div class="formbox titlebox">
+                <span>작성자</span><br>
+                <input type="text" name="author" placeHolder="작성자..." value="<% if (num != -1) { %><%= content.author %><% } %>">
+            </div>
+            <div class="formbox" id="initialFormbox">
+                <input type="hidden" name="content[0][title]" value="문제">
+                <input type="hidden" name="content[0][type]" value="textarea">
+                <span>문제</span><button type="button" onclick="remove(this.parentElement);">삭제</button><br>
+                <textarea name="content[0][content]" placeHolder="내용..."></textarea>
+            </div>
+        </div>
+        <button type="button" onclick="showPopup();">양식 추가</button>
+        <input type="submit" value="등록">
+        <button type="button" onclick="history.go(-1);">취소</button>
+    </form>
+    <div id="popup">
+        <div class="popupbox">
+            <span>형식</span>
+            <select id="paragraphtype" onchange="changeItem(this.value);">
+                <option value="textarea">문단</option>
+                <option value="example">예제</option>
+            </select><br>
+            <span>제목</span>
+            <input type="text" id="paragraphtitle" placeHolder="단락 제목..."><br>
+            <input type="hidden" id="inputtitle" placeHolder="입력 제목..."><br>
+            <input type="hidden" id="outputtitle" placeHolder="출력 제목..."><br>
+            <button type="button" onclick="addForm();hidePopup();">적용</button>
+            <button type="button" onclick="hidePopup();">취소</button>
+        </div>
+    </div>
+    <script>
+        function addForm() {
+            var contents = document.getElementById('contents');
+            var title = document.getElementById('paragraphtitle');
+            title = title.value;
+            var title1 = document.getElementById('inputtitle');
+            title1 = title1.value;
+            var title2 = document.getElementById('outputtitle');
+            title2 = title2.value;
+            var type = document.getElementById('paragraphtype');
+            type = type.value;
+            if (title.length < 1) {
+                title = '이름 없는 문단';
+                if (type == 'textarea') title = '이름 없는 문단';
+                if (type == 'example') title = '이름 없는 예제';
+            }
+            var div = document.createElement('div');
+            div.classList.add('formbox');
+            if (type == 'textarea') {
+                var span = document.createElement('span');
+                span.innerHTML = title;
+                var input = document.createElement('textarea');
+                input.placeholder = '내용...';
+                input.name = 'content[0][content]';
+                var hiddenTitle = document.createElement('input');
+                hiddenTitle.type = 'hidden';
+                hiddenTitle.name = 'content[0][title]';
+                hiddenTitle.value = title;
+                var hiddenType = document.createElement('input');
+                hiddenType.type = 'hidden';
+                hiddenType.name = 'content[0][type]';
+                hiddenType.value = type;
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.onclick = function () {
+                    remove(this.parentElement);
+                };
+                button.innerHTML = '삭제';
+                div.appendChild(hiddenTitle);
+                div.appendChild(hiddenType);
+                div.appendChild(span);
+                div.appendChild(button);
+                div.appendChild(document.createElement('br'));
+                div.appendChild(input);
+            }
+            if (type == 'example') {
+                var span1 = document.createElement('span');
+                span1.innerHTML = title1;
+                var span2 = document.createElement('span');
+                span2.innerHTML = title2;
+                var input1 = document.createElement('textarea');
+                input1.placeholder = '입력...';
+                input1.name = 'content[0][input][content]';
+                var input2 = document.createElement('textarea');
+                input2.placeholder = '출력...';
+                input2.name = 'content[0][output][content]';
+                var input = document.createElement('textarea');
+                input.placeholder = '설명...';
+                input.name = 'content[0][content]';
+                var hiddenTitle1 = document.createElement('input');
+                hiddenTitle1.type = 'hidden';
+                hiddenTitle1.name = 'content[0][input][title]';
+                hiddenTitle1.value = title1;
+                var hiddenTitle2 = document.createElement('input');
+                hiddenTitle2.type = 'hidden';
+                hiddenTitle2.name = 'content[0][output][title]';
+                hiddenTitle2.value = title2;
+                var hiddenType = document.createElement('input');
+                hiddenType.type = 'hidden';
+                hiddenType.name = 'content[0][type]';
+                hiddenType.value = type;
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.onclick = function () {
+                    remove(this.parentElement);
+                };
+                button.innerHTML = '삭제';
+                div.appendChild(hiddenTitle1);
+                div.appendChild(hiddenTitle2);
+                div.appendChild(hiddenType);
+                div.appendChild(span1);
+                div.appendChild(button);
+                div.appendChild(document.createElement('br'));
+                div.appendChild(input1);
+                div.appendChild(span2);
+                div.appendChild(document.createElement('br'));
+                div.appendChild(input2);
+                div.appendChild(input);
+            }
+            contents.appendChild(div);
+        }
+        function showPopup() {
+            var title = document.getElementById('paragraphtitle');
+            var type = document.getElementById('paragraphtype');
+            type.value = 'textarea';
+            document.getElementById('paragraphtitle').type = 'text';
+            document.getElementById('inputtitle').type = 'hidden';
+            document.getElementById('outputtitle').type = 'hidden';
+            var popup = document.getElementById('popup');
+            popup.style.display = 'block';
+        }
+        function hidePopup() {
+            var popup = document.getElementById('popup');
+            popup.style.display = 'none';
+        }
+        function reenumerate() {
+            var contents = document.getElementById('contents');
+            var index = 0;
+            Array.prototype.forEach.call(contents.childNodes, function (item) {
+                if (item.classList != undefined && item.classList.contains('formbox') && !item.classList.contains('titlebox')) {
+                    Array.prototype.forEach.call(item.childNodes, function (input) {
+                        if (input.name != undefined && input.name.substr(0, 7) == 'content') {
+                            input.name = 'content[' + index + input.name.substr(9);
+                        }
+                    });
+                    index++;
+                }
+            });
+        }
+        function submitForm() {
+            reenumerate();
+            return true;
+        }
+        function remove(item) {
+            var contents = document.getElementById('contents');
+            contents.removeChild(item);
+        }
+        function changeItem(v) {
+            document.getElementById('paragraphtitle').type = 'hidden';
+            document.getElementById('inputtitle').type = 'hidden';
+            document.getElementById('outputtitle').type = 'hidden';
+            if (v == 'textarea') document.getElementById('paragraphtitle').type = 'text';
+            if (v == 'example') {
+                document.getElementById('inputtitle').type = 'text';
+                document.getElementById('outputtitle').type = 'text';
+            }
+        }
+        <% if (num != -1) { %>
+        (function () {
+            var contents = document.getElementById('contents');
+            contents.removeChild(document.getElementById('initialFormbox'));
+            <% content.content.forEach(function (item) { %>
+            var div = document.createElement('div');
+            div.classList.add('formbox');
+            <% if (item.type == 'textarea') { %>
+            var span = document.createElement('span');
+            span.innerHTML = unescape('<%= escape(item.title) %>');
+            var input = document.createElement('textarea');
+            input.placeholder = '내용...';
+            input.name = 'content[0][content]';
+            input.value = unescape('<%= escape(item.content) %>');
+            var hiddenTitle = document.createElement('input');
+            hiddenTitle.type = 'hidden';
+            hiddenTitle.name = 'content[0][title]';
+            hiddenTitle.value = unescape('<%= escape(item.title) %>');
+            var hiddenType = document.createElement('input');
+            hiddenType.type = 'hidden';
+            hiddenType.name = 'content[0][type]';
+            hiddenType.value = unescape('<%= escape(item.type) %>');
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.onclick = function () {
+                remove(this.parentElement);
+            };
+            button.innerHTML = '삭제';
+            div.appendChild(hiddenTitle);
+            div.appendChild(hiddenType);
+            div.appendChild(span);
+            div.appendChild(button);
+            div.appendChild(document.createElement('br'));
+            div.appendChild(input);
+            <% } else { %>
+            var span1 = document.createElement('span');
+            span1.innerHTML = unescape('<%= escape(item.input.title) %>');
+            var span2 = document.createElement('span');
+            span2.innerHTML = unescape('<%= escape(item.output.title) %>');
+            var input1 = document.createElement('textarea');
+            input1.placeholder = '입력...';
+            input1.name = 'content[0][input][content]';
+            input1.value = unescape('<%= escape(item.input.content) %>')
+            var input2 = document.createElement('textarea');
+            input2.placeholder = '출력...';
+            input2.name = 'content[0][output][content]';
+            input2.value = unescape('<%= escape(item.output.content) %>')
+            var input = document.createElement('textarea');
+            input.placeholder = '설명...';
+            input.name = 'content[0][content]';
+            input.value = unescape('<%= escape(item.content) %>')
+            var hiddenTitle1 = document.createElement('input');
+            hiddenTitle1.type = 'hidden';
+            hiddenTitle1.name = 'content[0][input][title]';
+            hiddenTitle1.value = unescape('<%= escape(item.input.title) %>');
+            var hiddenTitle2 = document.createElement('input');
+            hiddenTitle2.type = 'hidden';
+            hiddenTitle2.name = 'content[0][output][title]';
+            hiddenTitle2.value = unescape('<%= escape(item.output.title) %>');
+            var hiddenType = document.createElement('input');
+            hiddenType.type = 'hidden';
+            hiddenType.name = 'content[0][type]';
+            hiddenType.value = unescape('<%= escape(item.type) %>');
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.onclick = function () {
+                remove(this.parentElement);
+            };
+            button.innerHTML = '삭제';
+            div.appendChild(hiddenTitle1);
+            div.appendChild(hiddenTitle2);
+            div.appendChild(hiddenType);
+            div.appendChild(span1);
+            div.appendChild(button);
+            div.appendChild(document.createElement('br'));
+            div.appendChild(input1);
+            div.appendChild(span2);
+            div.appendChild(document.createElement('br'));
+            div.appendChild(input2);
+            div.appendChild(input);
+            <% } %>
+            contents.appendChild(div);
+            <% }); %>
+        })();
+        <% } %>
+    </script>
+</body>
+</html>

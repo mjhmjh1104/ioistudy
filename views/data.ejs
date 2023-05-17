@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= content.title %></title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <style>
+        *:not(.MJX-TEX *) {
+            font-family: sans-serif;
+            color: #333;
+        }
+        *, p, ul, ol, li {
+            margin: 0;
+            margin-block: 0;
+        }
+        p {
+            line-height: 30px;
+        }
+        li {
+            margin-top: -5px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px #888 solid;
+            padding: 12px 15px;
+        }
+        .container {
+            margin: 100px auto;
+            width: 850px;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            border-bottom: 1px #ccc solid;
+            margin-bottom: 15px;
+        }
+        code, .code {
+            border: 1px #aaa solid;
+            padding: 5px 10px;
+            background-color: #eee;
+            font-family: 'Menlo', 'Consolas', Arial, sans-serif !important;
+        }
+        code {
+            display: inline-block;
+        }
+        .code {
+            display: block;
+        }
+        .code * {
+            font-family: 'Menlo', 'Consolas', Arial, sans-serif !important;
+        }
+        .examplewrap {
+        }
+        .example {
+            width: 100%;
+            display: inline-block;
+        }
+        .input {
+            width: calc(50% - 4px);
+            margin-right: 4px;
+            float: left;
+        }
+        .output {
+            width: calc(50% - 4px);
+            margin-left: 4px;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="marked"># <%- content.title %></div><br>
+        <div class="marked">작성: <%- content.author %></div><br>
+        <% content.content.forEach(function (item) { %>
+        <div>
+            <% if (item.type == 'textarea') { %>
+            <div class="marked">## <%- item.title %></div>
+            <div style="white-space: pre-wrap" class="marked"><%- item.content %></div>
+            <% } else { %>
+            <div class="examplewrap">
+                <div class="example">
+                    <div class="input">
+                        <div class="marked">## <%- item.input.title %></div>
+                        <div style="white-space: pre-wrap" class="marked code"><%- item.input.content %></div>
+                    </div>
+                    <div class="output">
+                        <div class="marked">## <%- item.output.title %></div>
+                        <div style="white-space: pre-wrap" class="marked code"><%- item.output.content %></div>
+                    </div>
+                </div>
+            </div>
+            <div style="white-space: pre-wrap" class="marked"><%- item.content %></div>
+            <% } %>
+        </div>
+        <% }); %>
+        <button type="button" onclick="history.go(-1);">뒤로</button>
+        <button type="button" onclick="location.href='/edit/<%= num %>'">수정</button>
+        <button type="button" onclick="location.href='/raw/<%= num %>'">raw</button>
+    </div>
+    <script>
+        var items = document.getElementsByClassName('marked');
+        Array.prototype.forEach.call(items, function (item) {
+            item.innerHTML = marked.parse(item.innerHTML);
+        });
+    </script>
+    <script>
+        MathJax = {
+            tex: { inlineMath: [ [ '$', '$' ], [ '\\(', '\\)' ] ] }
+        };
+    </script>
+</body>
+</html>
